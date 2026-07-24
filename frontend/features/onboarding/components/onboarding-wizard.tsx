@@ -1,15 +1,50 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { GraduationCap } from "lucide-react";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useOnboarding } from "@/features/onboarding/hooks/use-onboarding";
 import { StepIndicator } from "@/features/onboarding/components/step-indicator";
 import { PersonalStep } from "@/features/onboarding/components/steps/personal-step";
-import { AcademicStep } from "@/features/onboarding/components/steps/academic-step";
-import { ProfessionalStep } from "@/features/onboarding/components/steps/professional-step";
-import { DocumentsStep } from "@/features/onboarding/components/steps/documents-step";
+
+/**
+ * Only one step is on screen at a time, so shipping all four in the initial
+ * chunk makes every student download three forms (and their validation
+ * schemas, uploaders and tag inputs) they may skip entirely. Step 0 stays
+ * eager — it renders immediately; the rest are fetched on navigation.
+ */
+const StepFallback = () => (
+  <div className="min-h-[22rem] animate-pulse space-y-4" aria-busy="true">
+    <div className="h-4 w-1/3 rounded bg-section" />
+    <div className="h-11 rounded-lg bg-section" />
+    <div className="h-11 rounded-lg bg-section" />
+    <div className="h-11 rounded-lg bg-section" />
+  </div>
+);
+
+const AcademicStep = dynamic(
+  () =>
+    import("@/features/onboarding/components/steps/academic-step").then(
+      (m) => m.AcademicStep
+    ),
+  { loading: StepFallback }
+);
+const ProfessionalStep = dynamic(
+  () =>
+    import("@/features/onboarding/components/steps/professional-step").then(
+      (m) => m.ProfessionalStep
+    ),
+  { loading: StepFallback }
+);
+const DocumentsStep = dynamic(
+  () =>
+    import("@/features/onboarding/components/steps/documents-step").then(
+      (m) => m.DocumentsStep
+    ),
+  { loading: StepFallback }
+);
 
 const STEPS = [
   { title: "Personal Details", description: "Tell us who you are. This step is required." },

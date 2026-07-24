@@ -12,8 +12,13 @@ export default function Error({
   reset: () => void;
 }) {
   React.useEffect(() => {
-    // Surface for logging/observability.
-    console.error(error);
+    // Dev only: in production the full Error (message + stack) must not reach
+    // the browser console, where it leaks internals to anyone with DevTools.
+    // Next already reports the server-side error; `digest` is the safe handle
+    // shown to users for correlating with those logs.
+    if (process.env.NODE_ENV !== "production") {
+      console.error(error);
+    }
   }, [error]);
 
   return (

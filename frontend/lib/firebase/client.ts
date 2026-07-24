@@ -25,6 +25,22 @@ const firebaseConfig = {
   measurementId: env.firebase.measurementId || undefined,
 };
 
+// Without this, a deploy that is missing NEXT_PUBLIC_FIREBASE_* silently boots
+// on the demo placeholders above and every sign-in fails with an opaque
+// `auth/invalid-api-key` from deep inside the SDK. Say so once, plainly.
+// Names only — these values are public by design, but printing them is noise.
+if (
+  typeof window !== "undefined" &&
+  process.env.NODE_ENV === "production" &&
+  !env.firebase.apiKey
+) {
+  console.error(
+    "[firebase] NEXT_PUBLIC_FIREBASE_* environment variables are missing. " +
+      "Set them in the Vercel project settings and redeploy — " +
+      "authentication, Firestore and Storage cannot work until then."
+  );
+}
+
 // Reuse the app across hot reloads / RSC boundaries.
 const app: FirebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
 

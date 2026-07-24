@@ -1,9 +1,10 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { logger } from "firebase-functions/v2";
 import { FieldValue } from "firebase-admin/firestore";
-import { adminAuth, adminDb } from "../lib/admin";
+import { ALLOWED_DOMAIN, adminAuth, adminDb } from "../lib/admin";
 import { sendRecruiterVerificationEmail } from "../lib/email";
 import { CALLABLE_OPTIONS } from "../lib/https-options";
+import { enforceRateLimit } from "../lib/rate-limit";
 
 interface RegisterRecruiterInput {
   email: string;
@@ -34,12 +35,33 @@ export const registerRecruiter = onCall(
     if (!EMAIL_RE.test(email)) {
       throw new HttpsError("invalid-argument", "Enter a valid work email address.");
     }
-    if (email.endsWith("@saitm.ac.in")) {
+    if (email.endsWith(`@${ALLOWED_DOMAIN}`)) {
       throw new HttpsError(
         "invalid-argument",
-        "The @saitm.ac.in domain is reserved for students. Use your work email."
+        `The @${ALLOWED_DOMAIN} domain is reserved for students. Use your work email.`
       );
     }
+
+    // Throttle BEFORE creating anything. This endpoint is public and sends mail
+    // through the same Gmail account as student OTPs, so unmetered signups
+    // could exhaust the daily send quota and break student sign-in.
+    // Per-address first (cheap, catches retry storms)…
+    await enforceRateLimit({
+      scope: "recruiter-signup-email",
+      key: email,
+      max: 3,
+      windowMs: 60 * 60 * 1000,
+      message: "Too many registration attempts for this email. Try again later.",
+    });
+    // …then per-caller, which is what actually stops address enumeration.
+    const callerIp = request.rawRequest?.ip ?? "unknown";
+    await enforceRateLimit({
+      scope: "recruiter-signup-ip",
+      key: callerIp,
+      max: 10,
+      windowMs: 60 * 60 * 1000,
+      message: "Too many registration attempts. Please try again later.",
+    });
     if (password.length < 8) {
       throw new HttpsError("invalid-argument", "Password must be at least 8 characters.");
     }

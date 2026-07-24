@@ -88,6 +88,9 @@ service cloud.firestore {
     // Server-only collections (Admin SDK bypasses these rules).
     match /otpRequests/{doc} { allow read, write: if false; }
     match /mail/{doc}        { allow read, write: if false; }
+    // Abuse counters for public callables. Client-writable counters would be
+    // trivially resettable, which is the same as having no rate limit at all.
+    match /rateLimits/{doc}  { allow read, write: if false; }
 
     // Deny everything else by default.
     match /{document=**} {

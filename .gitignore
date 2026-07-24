@@ -12,6 +12,9 @@ frontend/build/
 .dist/
 backend/functions/lib/
 
+# TypeScript incremental build artifacts (regenerated on every build)
+*.tsbuildinfo
+
 # Environment (only .env.example is committed)
 # Ignore EVERY .env variant at any depth, then re-allow the examples.
 .env
