@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    // node16 replaces the deprecated node10 resolution. package.json has no
+    // "type": "module", so this still emits CommonJS for the Functions runtime.
+    "module": "node16",
+    "moduleResolution": "node16",
+    "target": "es2021",
+    "lib": ["es2021"],
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    // Explicit so the lib/ layout can't shift if a file is ever added outside src/.
+    "rootDir": "src",
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts"]
+}

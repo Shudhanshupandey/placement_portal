@@ -1,0 +1,97 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+    function hasRole(r) {
+      return isSignedIn() && request.auth.token.role == r;
+    }
+    function isAdmin() {
+      return hasRole('admin');
+    }
+    function roleIsStudentOrAbsent() {
+      return !('role' in request.resource.data) || request.resource.data.role == 'student';
+    }
+
+    // ── Canonical identity (users/{uid}) ──
+    // Created server-side (Cloud Functions, which bypass rules). Students may
+    // update their own doc to mark the profile complete and move verification to
+    // "pending" — but never self-verify, change role, or toggle isActive.
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() || (
+        isOwner(uid)
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.isActive == resource.data.isActive
+        && request.resource.data.verificationStatus in ['unverified', 'pending']
+        && (!('approvalStatus' in request.resource.data)
+            || request.resource.data.approvalStatus == resource.data.get('approvalStatus', null))
+      );
+      allow delete: if false;
+    }
+
+    // ── Recruiter profiles ── (created by registerRecruiter; approved by admin)
+    match /recruiters/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Admin profiles ── (provisioned via Admin SDK only)
+    match /admins/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if false;
+    }
+
+    // ── Student profile (identity + personal + onboarding meta + settings) ──
+    match /students/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid) && roleIsStudentOrAbsent();
+      allow delete: if false;
+    }
+    match /academicDetails/{uid}      { allow read, write: if isOwner(uid); }
+    match /professionalDetails/{uid}  { allow read, write: if isOwner(uid); }
+    match /documents/{uid}            { allow read, write: if isOwner(uid); }
+
+    // ── Placement drives (published by admin; read-only for students) ──
+    match /placementDrives/{id} {
+      allow read: if isSignedIn() && resource.data.status == 'published';
+      allow write: if false; // managed by admin/TPO via Admin SDK
+    }
+
+    // ── Applications (id = `${uid}_${driveId}`) ──
+    match /applications/{id} {
+      allow read: if isSignedIn() && resource.data.studentId == request.auth.uid;
+      allow create: if isSignedIn()
+        && request.resource.data.studentId == request.auth.uid
+        && request.resource.data.status == 'pending';
+      // Status transitions are performed by recruiters/admin via the Admin SDK.
+      allow update, delete: if false;
+    }
+
+    // ── Notifications (personal + "all" broadcasts) ──
+    match /notifications/{id} {
+      allow read: if isSignedIn()
+        && (resource.data.recipientId == request.auth.uid || resource.data.recipientId == 'all');
+      // Students may create their own (self) notifications and mark them read.
+      allow create: if isSignedIn() && request.resource.data.recipientId == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.recipientId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Server-only collections (Admin SDK bypasses these rules).
+    match /otpRequests/{doc} { allow read, write: if false; }
+    match /mail/{doc}        { allow read, write: if false; }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
