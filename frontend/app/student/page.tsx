@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { AuthShell } from "@/components/layout/auth-shell";
 import { AuthCard, DemoAccountsCard } from "@/features/auth";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES, homeForRole } from "@/constants/routes";
 import { writeRouteHint } from "@/lib/auth/route-hint";
 import { IS_DEV_MODE } from "@/lib/dev-mode/flag";
 
@@ -14,18 +14,27 @@ import { IS_DEV_MODE } from "@/lib/dev-mode/flag";
  * recruiter or admin options here; the management portal lives at /portal.
  */
 export default function StudentLoginPage() {
-  const { user, loading, profile } = useAuth();
+  const { user, loading, profile, role } = useAuth();
   const router = useRouter();
 
-  // Once authenticated, route by onboarding status.
+  // Once authenticated, route by role, then by onboarding status.
   React.useEffect(() => {
     if (loading || !user) return;
+    // Demo mode lets a visitor sign in as recruiter/admin straight from this
+    // page (Demo Accounts card). Send non-students to their own dashboard —
+    // otherwise the effect below would push them into the student area and the
+    // middleware would 403 them. In production the OTP flow only ever yields a
+    // student, so this branch never runs there.
+    if (role && role !== "student") {
+      router.replace(homeForRole(role));
+      return;
+    }
     if (profile && !profile.profileCompleted) {
       router.replace(ROUTES.onboarding);
     } else {
       router.replace(ROUTES.student.dashboard);
     }
-  }, [loading, user, profile, router]);
+  }, [loading, user, profile, role, router]);
 
   const handleAuthenticated = React.useCallback(
     ({ isNewUser }: { isNewUser: boolean }) => {
