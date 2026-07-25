@@ -24,6 +24,10 @@ export type {
 // Management Portal (recruiter + admin, role-selector login)
 export { ManagementLoginForm } from "@/features/auth/components/management-login-form";
 
+// Demo Accounts card — presentational surface for the mock-auth accounts on the
+// login page. Render behind IS_DEV_MODE; tree-shaken out with demo mode off.
+export { DemoAccountsCard } from "@/features/auth/components/demo-accounts-card";
+
 // Recruiter
 export { RecruiterRegisterForm } from "@/features/auth/components/recruiter-register-form";
 export { WaitingForApproval } from "@/features/auth/components/waiting-for-approval";

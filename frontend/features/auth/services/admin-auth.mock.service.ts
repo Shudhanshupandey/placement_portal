@@ -11,7 +11,7 @@ import { signInMockAccount, signOutMock } from "@/lib/dev-mode/mock-auth";
  * message the production service uses. Recruiter credentials can no more unlock
  * the admin console here than they can against Firebase.
  *
- * Seeded account → admin@saitm.org / Admin@123
+ * Seeded account → admin@saitm.demo / Admin@123
  */
 export const adminAuthService = {
   async login(email: string, password: string): Promise<void> {

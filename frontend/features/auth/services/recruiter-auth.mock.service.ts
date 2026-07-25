@@ -16,7 +16,7 @@ import type { MockAccount } from "@/data/mock";
  * "verify your email" screens, which a shortcut straight to `approved` would
  * hide.
  *
- * Seeded account → recruiter@saitm.org / Recruiter@123 (verified, approved).
+ * Seeded account → recruiter@saitm.demo / Recruiter@123 (verified, approved).
  */
 export const recruiterAuthService = {
   async register(values: RecruiterRegisterValues): Promise<void> {

@@ -58,7 +58,7 @@ export const MOCK_STUDENT_ACCOUNT: MockAccount = {
 
 export const MOCK_RECRUITER_ACCOUNT: MockAccount = {
   uid: DEV_RECRUITER_UID,
-  email: "recruiter@saitm.org",
+  email: "recruiter@saitm.demo",
   role: "recruiter",
   displayName: "Neha Verma",
   emailVerified: true,
@@ -78,7 +78,7 @@ export const MOCK_RECRUITER_ACCOUNT: MockAccount = {
 
 export const MOCK_ADMIN_ACCOUNT: MockAccount = {
   uid: DEV_ADMIN_UID,
-  email: "admin@saitm.org",
+  email: "admin@saitm.demo",
   role: "admin",
   displayName: "Dr. R. K. Malhotra",
   emailVerified: true,

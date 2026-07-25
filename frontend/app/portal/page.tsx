@@ -1,6 +1,7 @@
 import { Building2, ShieldCheck, BarChart3 } from "lucide-react";
 import { AuthShell } from "@/components/layout/auth-shell";
-import { ManagementLoginForm } from "@/features/auth";
+import { ManagementLoginForm, DemoAccountsCard } from "@/features/auth";
+import { IS_DEV_MODE } from "@/lib/dev-mode/flag";
 
 /**
  * Management Portal — the single sign-in surface for recruiters and admins.
@@ -24,6 +25,7 @@ export default function PortalLoginPage() {
       ]}
     >
       <ManagementLoginForm />
+      {IS_DEV_MODE && <DemoAccountsCard />}
     </AuthShell>
   );
 }
