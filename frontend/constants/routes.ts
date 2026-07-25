@@ -44,11 +44,24 @@ export const ROUTES = {
   recruiter: {
     home: "/recruiter",
     pending: "/recruiter/pending",
+    drives: "/recruiter/drives",
+    applicants: "/recruiter/applicants",
+    company: "/recruiter/company",
+    analytics: "/recruiter/analytics",
+    notifications: "/recruiter/notifications",
   },
 
   // ── Admin (protected) ──
   admin: {
     home: "/admin",
+    students: "/admin/students",
+    recruiters: "/admin/recruiters",
+    companies: "/admin/companies",
+    drives: "/admin/drives",
+    analytics: "/admin/analytics",
+    reports: "/admin/reports",
+    downloads: "/admin/downloads",
+    notifications: "/admin/notifications",
   },
 } as const;
 
