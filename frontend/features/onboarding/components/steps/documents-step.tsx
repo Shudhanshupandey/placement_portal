@@ -12,8 +12,8 @@ import {
   type Uploader,
 } from "@/features/onboarding/components/file-upload";
 import { WizardNav } from "@/features/onboarding/components/wizard-nav";
-import { uploadDocumentToStorage } from "@/lib/storage/upload";
-import { uploadImageToCloudinary } from "@/lib/cloudinary/upload";
+import { uploadDocumentToStorage } from "@/lib/storage";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 import {
   documentsSchema,
   type DocumentsFormValues,

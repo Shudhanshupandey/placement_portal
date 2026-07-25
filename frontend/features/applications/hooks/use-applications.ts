@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { applicationsService } from "@/features/applications/services/applications.service";
+import { applicationsService } from "@/features/applications/services";
 import type { FullStudentProfile } from "@/features/profile";
 import type { PlacementDrive } from "@/features/placement-drives";
 

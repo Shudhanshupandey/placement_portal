@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { notificationsService } from "@/features/notifications/services/notifications.service";
+import { notificationsService } from "@/features/notifications/services";
 import type { AppNotification } from "@/features/notifications/types";
 
 export function useNotifications() {

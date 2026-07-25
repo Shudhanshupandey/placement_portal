@@ -14,6 +14,7 @@ export type { EligibilityResult } from "@/features/applications/lib/eligibility"
 export { STATUS_META, ALL_STATUSES } from "@/features/applications/lib/status-meta";
 export type {
   Application,
+  ApplicantSnapshot,
   ApplicationStatus,
   StatusEvent,
 } from "@/features/applications/types";

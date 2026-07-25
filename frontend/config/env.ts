@@ -1,6 +1,12 @@
 /**
  * Centralized, typed access to public environment variables.
  * Read env ONLY through this module — never `process.env` scattered in components.
+ *
+ * ONE documented exception: `NEXT_PUBLIC_DEV_MODE` is read directly in
+ * `lib/dev-mode/flag.ts`. That flag has to survive as a build-time literal so
+ * the mock auth layer is eliminated by dead-code elimination in production
+ * builds; routing it through this object would defeat that. It is read in
+ * exactly one place, which preserves the rule's intent.
  */
 export const env = {
   firebase: {

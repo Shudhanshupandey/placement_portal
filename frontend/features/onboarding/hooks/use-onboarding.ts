@@ -4,7 +4,7 @@ import * as React from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { onboardingService } from "@/features/onboarding/services/onboarding.service";
+import { onboardingService } from "@/features/onboarding/services";
 import type {
   OnboardingData,
   PersonalFormValues,

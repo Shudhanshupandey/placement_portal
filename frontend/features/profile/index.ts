@@ -1,6 +1,7 @@
 /** Public API for the "profile" feature. */
-export { profileService } from "@/features/profile/services/profile.service";
+export { profileService } from "@/features/profile/services";
 export { useFullProfile } from "@/features/profile/hooks/use-full-profile";
+export { useUpdateSettings } from "@/features/profile/hooks/use-update-settings";
 export {
   getMissingItems,
   getApplyReadiness,
@@ -11,4 +12,5 @@ export type {
   FullStudentProfile,
   MissingItem,
   ProfileSection,
+  StudentSettings,
 } from "@/features/profile/types";

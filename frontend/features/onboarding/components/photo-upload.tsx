@@ -5,7 +5,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { Camera, Loader2, User } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { uploadImageToCloudinary } from "@/lib/cloudinary/upload";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
 interface PhotoUploadProps {
   value?: string;

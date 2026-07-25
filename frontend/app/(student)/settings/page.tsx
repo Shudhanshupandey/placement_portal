@@ -3,7 +3,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { doc, updateDoc } from "firebase/firestore";
 import { toast } from "sonner";
 import {
   ShieldCheck,
@@ -17,9 +16,8 @@ import {
   Linkedin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { db } from "@/lib/firebase/client";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { useFullProfile } from "@/features/profile";
+import { useFullProfile, useUpdateSettings } from "@/features/profile";
 import { ROUTES } from "@/constants/routes";
 import { SectionCard } from "@/components/shared/section-card";
 import { Button } from "@/components/ui/button";
@@ -68,6 +66,7 @@ const PREF_LABELS = [
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
   const { data: full } = useFullProfile();
+  const updateSettings = useUpdateSettings();
   const router = useRouter();
 
   const [prefs, setPrefs] = React.useState<Record<string, boolean>>({
@@ -77,22 +76,17 @@ export default function SettingsPage() {
     announcements: true,
   });
   const [visible, setVisible] = React.useState(true);
-  const [saving, setSaving] = React.useState(false);
+  const saving = updateSettings.isPending;
 
-  const savePrefs = async () => {
+  const savePrefs = () => {
     if (!user) return;
-    setSaving(true);
-    try {
-      await updateDoc(doc(db, "students", user.uid), {
-        notificationPrefs: prefs,
-        recruiterVisible: visible,
-      });
-      toast.success("Settings saved");
-    } catch {
-      toast.error("Couldn't save settings");
-    } finally {
-      setSaving(false);
-    }
+    updateSettings.mutate(
+      { notificationPrefs: prefs, recruiterVisible: visible },
+      {
+        onSuccess: () => toast.success("Settings saved"),
+        onError: () => toast.error("Couldn't save settings"),
+      }
+    );
   };
 
   const handleSignOut = async () => {

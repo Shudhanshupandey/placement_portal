@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { profileService } from "@/features/profile/services/profile.service";
+import { profileService } from "@/features/profile/services";
 
 export function useFullProfile() {
   const { user } = useAuth();

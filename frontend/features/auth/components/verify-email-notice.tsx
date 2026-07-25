@@ -4,7 +4,7 @@ import * as React from "react";
 import { toast } from "sonner";
 import { MailWarning, RefreshCw, Send, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { recruiterAuthService } from "@/features/auth/services/recruiter-auth.service";
+import { recruiterAuthService } from "@/features/auth/services";
 
 interface VerifyEmailNoticeProps {
   email?: string;

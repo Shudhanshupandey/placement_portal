@@ -23,8 +23,7 @@ import { cn } from "@/lib/utils";
 import { ROUTES, homeForRole } from "@/constants/routes";
 import { writeRouteHint } from "@/lib/auth/route-hint";
 import { loginSchema, type LoginFormValues } from "@/features/auth/schemas/credentials.schema";
-import { adminAuthService } from "@/features/auth/services/admin-auth.service";
-import { recruiterAuthService } from "@/features/auth/services/recruiter-auth.service";
+import { adminAuthService, recruiterAuthService } from "@/features/auth/services";
 
 /** Roles that authenticate through the management portal. */
 type ManagementRole = "recruiter" | "admin";

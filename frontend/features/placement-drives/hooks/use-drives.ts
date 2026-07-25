@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { drivesService } from "@/features/placement-drives/services/drives.service";
+import { drivesService } from "@/features/placement-drives/services";
 
 export function useDrives() {
   return useQuery({

@@ -20,7 +20,7 @@ import {
   forgotPasswordSchema,
   type ForgotPasswordValues,
 } from "@/features/auth/schemas/credentials.schema";
-import { passwordAuthService } from "@/features/auth/services/admin-auth.service";
+import { passwordAuthService } from "@/features/auth/services";
 
 export function ForgotPasswordForm() {
   const [submitting, setSubmitting] = React.useState(false);

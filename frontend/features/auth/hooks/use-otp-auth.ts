@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { toast } from "sonner";
-import { authService } from "@/features/auth/services/auth.service";
+import { authService } from "@/features/auth/services";
 
 type Step = "email" | "otp";
 

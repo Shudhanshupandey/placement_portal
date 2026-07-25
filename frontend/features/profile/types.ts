@@ -12,6 +12,13 @@ export interface FullStudentProfile {
   documents: Partial<DocumentsFormValues>;
 }
 
+/** Student-controlled preferences stored on `students/{uid}`. */
+export interface StudentSettings {
+  notificationPrefs: Record<string, boolean>;
+  /** Opt out of appearing in recruiter candidate searches. */
+  recruiterVisible: boolean;
+}
+
 export type ProfileSection = "personal" | "academic" | "professional" | "documents";
 
 export interface MissingItem {

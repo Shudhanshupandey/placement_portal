@@ -24,7 +24,7 @@ import {
   recruiterRegisterSchema,
   type RecruiterRegisterValues,
 } from "@/features/auth/schemas/credentials.schema";
-import { recruiterAuthService } from "@/features/auth/services/recruiter-auth.service";
+import { recruiterAuthService } from "@/features/auth/services";
 
 export function RecruiterRegisterForm() {
   const router = useRouter();

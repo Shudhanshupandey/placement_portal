@@ -44,6 +44,11 @@ export interface StudentProfile {
     documents: boolean;
   };
 
+  // Preferences (written by the settings page; absent until first saved)
+  notificationPrefs?: Record<string, boolean>;
+  /** Opt out of appearing in recruiter candidate searches. */
+  recruiterVisible?: boolean;
+
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
 }
