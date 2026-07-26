@@ -10,6 +10,17 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-primary text-primary-foreground shadow-soft hover:bg-primary-light",
+        /**
+         * Solid SAITM Primary Blue that DARKENS on interaction.
+         *
+         * `default` lifts toward the gradient's lighter navy on hover; this goes
+         * the other way, for a filled brand button that should read as pressing
+         * into the surface. The darker steps come from `brightness` rather than
+         * new hex values, so the locked palette gains no extra colour — the
+         * same approach `destructive` and `gold` already use here.
+         */
+        brand:
+          "border-0 bg-primary text-primary-foreground hover:brightness-95 active:brightness-90",
         gold: "bg-gold-gradient text-gold-foreground font-semibold shadow-gold hover:brightness-105",
         outline:
           "border border-border bg-card text-foreground hover:bg-section hover:text-primary",

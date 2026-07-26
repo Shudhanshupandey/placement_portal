@@ -71,7 +71,7 @@ function AccountRow({
 
       <Button
         size="sm"
-        variant="outline"
+        variant="brand"
         className="mt-3 w-full"
         disabled={busy}
         onClick={() => onSignIn(account)}
