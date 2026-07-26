@@ -2,6 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
+  PageShell,
   PageHeader,
   DataTable,
   StatusPill,
@@ -52,12 +53,52 @@ export default function AdminDrivesPage() {
   ];
 
   return (
-    <div>
+    <PageShell>
       <PageHeader
         title="Placement drives"
         description={`${MOCK_DRIVES.length} drives across the current cycle.`}
       />
-      <DataTable columns={cols} rows={MOCK_DRIVES} rowKey={(d) => d.id} />
-    </div>
+      <DataTable
+        columns={cols}
+        rows={MOCK_DRIVES}
+        rowKey={(d) => d.id}
+        caption="Placement drives with package, location, openings, deadline and status"
+        renderMobileCard={(d) => (
+          <div className="space-y-3">
+            <div className="flex items-start gap-3">
+              <Avatar className="h-10 w-10 rounded-lg">
+                <AvatarImage src={d.companyLogoUrl} alt="" />
+                <AvatarFallback>{initials(d.companyName)}</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold text-heading">{d.role}</p>
+                <p className="truncate text-xs text-muted-foreground">{d.companyName}</p>
+              </div>
+              <StatusPill tone={statusTone(d.status)}>{d.status}</StatusPill>
+            </div>
+            <dl className="grid grid-cols-2 gap-x-4 gap-y-2 border-t border-border pt-3 text-xs">
+              <div className="min-w-0">
+                <dt className="text-muted-foreground">Package</dt>
+                <dd className="truncate font-medium text-heading">{d.packageLabel}</dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="text-muted-foreground">Location</dt>
+                <dd className="truncate font-medium text-heading">{d.location}</dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="text-muted-foreground">Openings</dt>
+                <dd className="font-medium text-heading">{d.openings ?? "—"}</dd>
+              </div>
+              <div className="min-w-0">
+                <dt className="text-muted-foreground">Deadline</dt>
+                <dd className="font-medium text-heading">
+                  {d.lastDateMs ? formatDate(d.lastDateMs) : "—"}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        )}
+      />
+    </PageShell>
   );
 }

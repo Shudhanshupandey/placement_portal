@@ -36,20 +36,26 @@ function Logo({ drive, size = 48 }: { drive: PlacementDrive; size?: number }) {
   const [failed, setFailed] = React.useState(false);
   if (drive.companyLogoUrl && !failed) {
     return (
+      // Kept as a plain <img>: company logos arrive as inline SVG data URIs from
+      // the fixtures, which next/image will not optimise without enabling
+      // dangerouslyAllowSVG. `onError` falls back to the initial badge below.
       // eslint-disable-next-line @next/next/no-img-element
       <img
         src={drive.companyLogoUrl}
-        alt={drive.companyName}
+        alt=""
+        loading="lazy"
+        decoding="async"
         onError={() => setFailed(true)}
         style={{ width: size, height: size }}
-        className="rounded-xl border border-border bg-card object-contain p-1.5"
+        className="shrink-0 rounded-xl border border-border bg-card object-contain p-1.5"
       />
     );
   }
   return (
     <span
+      aria-hidden="true"
       style={{ width: size, height: size }}
-      className="flex items-center justify-center rounded-xl bg-primary/10 font-bold text-primary"
+      className="flex shrink-0 items-center justify-center rounded-xl bg-primary/10 font-bold text-primary"
     >
       {drive.companyName?.[0]?.toUpperCase() ?? <Building2 className="h-5 w-5" />}
     </span>
@@ -111,23 +117,28 @@ export function DriveCard({ drive, renderApply }: DriveCardProps) {
           </div>
         )}
 
-        {/* Footer */}
-        <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+        {/* Pushes the footer to the card's bottom edge so cards in a grid line
+            up regardless of how many eligibility chips each one carries. */}
+        <div className="flex-1" aria-hidden="true" />
+
+        {/* Footer — stacks below `xs` so the deadline and the two actions never
+            fight for room on a 360px phone. */}
+        <div className="mt-4 flex flex-col gap-3 border-t border-border pt-4 xs:flex-row xs:items-center xs:justify-between">
           <span
             className={cn(
               "inline-flex items-center gap-1.5 text-xs font-medium",
-              deadline.closed
-                ? "text-muted-foreground"
-                : deadline.urgent
-                  ? "text-error"
-                  : "text-muted-foreground"
+              deadline.urgent && !deadline.closed ? "text-error-ink" : "text-muted-foreground"
             )}
           >
-            <Clock className="h-3.5 w-3.5" /> {deadline.text}
+            <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {deadline.text}
           </span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 [&>*]:flex-1 xs:[&>*]:flex-none">
             <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
               View details
+              <span className="sr-only">
+                {" "}
+                for {drive.role} at {drive.companyName}
+              </span>
             </Button>
             {renderApply?.(drive)}
           </div>
@@ -136,13 +147,15 @@ export function DriveCard({ drive, renderApply }: DriveCardProps) {
 
       {/* Details dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-xl">
+        {/* Capped to the viewport and scrollable: a long description plus the
+            eligibility list overflows a short phone in landscape otherwise. */}
+        <DialogContent className="max-h-[85svh] max-w-xl overflow-y-auto">
           <DialogHeader>
             <div className="flex items-center gap-3">
               <Logo drive={drive} size={44} />
-              <div>
+              <div className="min-w-0">
                 <DialogTitle>{drive.role}</DialogTitle>
-                <p className="text-sm text-muted-foreground">{drive.companyName}</p>
+                <p className="truncate text-sm text-muted-foreground">{drive.companyName}</p>
               </div>
             </div>
           </DialogHeader>

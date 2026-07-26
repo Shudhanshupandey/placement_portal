@@ -3,11 +3,11 @@
 import * as React from "react";
 import Link from "next/link";
 import { FileText } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/empty-state";
 import { SectionCard } from "@/components/shared/section-card";
+import { FilterChips } from "@/components/dashboard";
 import { ROUTES } from "@/constants/routes";
 import {
   useMyApplications,
@@ -32,13 +32,21 @@ export default function ApplicationsPage() {
   }, [applications]);
 
   const visible = filter === "all" ? applications : applications.filter((a) => a.status === filter);
-  const filters: Filter[] = ["all", ...ALL_STATUSES.filter((s) => counts[s] > 0)];
+  const filterOptions = React.useMemo(
+    () =>
+      (["all", ...ALL_STATUSES.filter((s) => counts[s] > 0)] as Filter[]).map((f) => ({
+        key: f,
+        label: f === "all" ? "All" : STATUS_META[f].label,
+        count: counts[f],
+      })),
+    [counts]
+  );
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-heading">My Applications</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-display-sm font-bold text-heading">My Applications</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Track every application and its status timeline.
         </p>
       </div>
@@ -62,37 +70,26 @@ export default function ApplicationsPage() {
             <ApplicationStats applications={applications} />
           </SectionCard>
 
-          {/* Filters */}
-          <div className="flex flex-wrap gap-2">
-            {filters.map((f) => {
-              const active = filter === f;
-              const label = f === "all" ? "All" : STATUS_META[f].label;
-              return (
-                <button
-                  key={f}
-                  type="button"
-                  onClick={() => setFilter(f)}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                    active
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card text-foreground hover:bg-section"
-                  )}
-                >
-                  {label}
-                  <span className={cn("text-xs", active ? "text-white/80" : "text-muted-foreground")}>
-                    {counts[f]}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <FilterChips
+            options={filterOptions}
+            value={filter}
+            onChange={setFilter}
+            label="Filter applications by status"
+          />
 
-          <div className="space-y-3">
-            {visible.map((app) => (
-              <ApplicationRow key={app.id} app={app} />
-            ))}
-          </div>
+          {visible.length === 0 ? (
+            <EmptyState
+              icon={FileText}
+              title="Nothing in this stage"
+              description="No applications currently have this status."
+            />
+          ) : (
+            <div className="space-y-3">
+              {visible.map((app) => (
+                <ApplicationRow key={app.id} app={app} />
+              ))}
+            </div>
+          )}
         </>
       )}
     </div>

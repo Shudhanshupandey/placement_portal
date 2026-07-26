@@ -21,16 +21,32 @@ export function WizardNav({ step, submitting, onBack, onSkip }: WizardNavProps) 
   const isLast = step === TOTAL_STEPS - 1;
 
   return (
-    <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-6">
-      <div>
+    // Three buttons will not sit on one line at 360px. On mobile the primary
+    // action goes full-width on its own row with Previous/Skip beneath it;
+    // `flex-col-reverse` keeps Continue first in the DOM for tab order while
+    // rendering it on top, where the thumb is.
+    <div className="mt-8 flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center gap-2">
         {!isFirst && (
           <Button
             type="button"
             variant="ghost"
             onClick={onBack}
             disabled={submitting}
+            className="flex-1 sm:flex-none"
           >
             <ArrowLeft /> Previous
+          </Button>
+        )}
+        {!isFirst && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onSkip}
+            disabled={submitting}
+            className="flex-1 sm:hidden"
+          >
+            Skip for now
           </Button>
         )}
       </div>
@@ -42,11 +58,17 @@ export function WizardNav({ step, submitting, onBack, onSkip }: WizardNavProps) 
             variant="outline"
             onClick={onSkip}
             disabled={submitting}
+            className="hidden sm:inline-flex"
           >
             Skip for now
           </Button>
         )}
-        <Button type="submit" variant={isLast ? "gold" : "default"} disabled={submitting}>
+        <Button
+          type="submit"
+          variant={isLast ? "gold" : "default"}
+          disabled={submitting}
+          className="w-full sm:w-auto"
+        >
           {submitting ? (
             <>
               <Loader2 className="animate-spin" /> Saving…

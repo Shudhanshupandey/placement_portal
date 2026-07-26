@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Globe, Mail, Phone, Pencil, Briefcase, UserCheck, CalendarDays } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
-import { PageHeader, StatusPill } from "@/components/dashboard";
+import { PageShell, PageHeader, StatusPill } from "@/components/dashboard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/utils/format";
@@ -39,7 +39,7 @@ export default function RecruiterCompanyPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <PageShell>
       <PageHeader
         title="Company profile"
         description="How your organisation appears to SAITM students."
@@ -123,6 +123,6 @@ export default function RecruiterCompanyPage() {
           </dl>
         </SectionCard>
       </div>
-    </div>
+    </PageShell>
   );
 }

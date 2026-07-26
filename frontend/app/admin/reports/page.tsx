@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { Download, FileText, Loader2, Clock, CircleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PageHeader, StatusPill, type PillTone } from "@/components/dashboard";
+import { PageShell, PageHeader, StatusPill, type PillTone } from "@/components/dashboard";
 import { formatDate, inr } from "@/utils/format";
 import { MOCK_REPORTS, type MockReport, type ReportStatus } from "@/data/mock";
 
@@ -49,7 +49,7 @@ function ReportRow({ r }: { r: MockReport }) {
 
 export default function AdminReportsPage() {
   return (
-    <div>
+    <PageShell>
       <PageHeader
         title="Reports"
         description="Placement, company and compliance reports for the current cycle."
@@ -59,6 +59,6 @@ export default function AdminReportsPage() {
           <ReportRow key={r.id} r={r} />
         ))}
       </div>
-    </div>
+    </PageShell>
   );
 }

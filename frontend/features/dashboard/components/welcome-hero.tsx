@@ -35,12 +35,12 @@ export function WelcomeHero({ name, course, branch, year, pct }: WelcomeHeroProp
   ].filter(Boolean) as { icon: typeof BookOpen; text: string }[];
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-primary-gradient p-6 text-primary-foreground shadow-card sm:p-7">
+    <div className="on-dark relative overflow-hidden rounded-2xl bg-primary-gradient p-5 text-primary-foreground shadow-card sm:p-7">
       <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-gold/15 blur-3xl" />
       <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <p className="text-sm text-white/70">{greeting()},</p>
-          <h1 className="truncate text-2xl font-bold sm:text-[28px]">{name} 👋</h1>
+          <h1 className="truncate text-display-md font-bold text-white">{name} 👋</h1>
           {chips.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
               {chips.map(({ icon: Icon, text }) => (
@@ -56,16 +56,27 @@ export function WelcomeHero({ name, course, branch, year, pct }: WelcomeHeroProp
         </div>
 
         {/* Completion ring */}
-        <div className="flex shrink-0 items-center gap-3 rounded-xl bg-white/10 px-4 py-3 backdrop-blur">
-          <div className="relative h-12 w-12">
+        <div
+          className="flex shrink-0 items-center gap-3 self-start rounded-xl bg-white/10 px-4 py-3 backdrop-blur sm:self-auto"
+          role="img"
+          aria-label={`Profile completion: ${pct} percent`}
+        >
+          <div className="relative h-12 w-12" aria-hidden="true">
             <svg viewBox="0 0 36 36" className="h-12 w-12 -rotate-90">
-              <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="4" />
               <circle
                 cx="18"
                 cy="18"
                 r="15"
                 fill="none"
-                stroke="#D8AE3E"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="4"
+              />
+              <circle
+                cx="18"
+                cy="18"
+                r="15"
+                fill="none"
+                className="stroke-gold"
                 strokeWidth="4"
                 strokeLinecap="round"
                 strokeDasharray={`${(pct / 100) * 94.2} 94.2`}
@@ -75,7 +86,7 @@ export function WelcomeHero({ name, course, branch, year, pct }: WelcomeHeroProp
               {pct}%
             </span>
           </div>
-          <div>
+          <div aria-hidden="true">
             <p className="text-xs text-white/70">Profile</p>
             <p className="text-sm font-semibold">Completion</p>
           </div>

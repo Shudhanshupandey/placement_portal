@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Globe, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PageHeader, StatusPill, type PillTone } from "@/components/dashboard";
+import { PageShell, PageHeader, StatusPill, type PillTone } from "@/components/dashboard";
 import { MOCK_COMPANIES, type MockCompany } from "@/data/mock";
 
 function tierTone(tier: MockCompany["tier"]): PillTone {
@@ -16,7 +16,7 @@ function initials(name: string) {
 
 export default function AdminCompaniesPage() {
   return (
-    <div>
+    <PageShell>
       <PageHeader
         title="Companies"
         description={`${MOCK_COMPANIES.length} recruiting partners engaged with SAITM.`}
@@ -67,6 +67,6 @@ export default function AdminCompaniesPage() {
           </article>
         ))}
       </div>
-    </div>
+    </PageShell>
   );
 }

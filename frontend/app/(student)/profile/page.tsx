@@ -56,33 +56,45 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-soft sm:flex-row sm:items-center">
-        <Avatar className="h-20 w-20">
+      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-soft sm:flex-row sm:items-center sm:p-6">
+        <Avatar className="h-16 w-16 shrink-0 sm:h-20 sm:w-20">
           {s?.photoUrl && <AvatarImage src={s.photoUrl} alt="" />}
           <AvatarFallback className="text-xl">{initials}</AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
-          <h1 className="text-xl font-bold text-heading">{s?.fullName ?? "Your Profile"}</h1>
-          <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5">
-              <Mail className="h-3.5 w-3.5" /> {s?.email ?? user?.email}
+          <h1 className="text-display-sm font-bold text-heading">
+            {s?.fullName ?? "Your Profile"}
+          </h1>
+          <div className="mt-1 flex flex-col gap-1 text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4">
+            <span className="inline-flex min-w-0 items-center gap-1.5">
+              <Mail className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+              <span className="truncate">{s?.email ?? user?.email}</span>
             </span>
             {s?.mobileNumber && (
               <span className="inline-flex items-center gap-1.5">
-                <Phone className="h-3.5 w-3.5" /> {s.mobileNumber}
+                <Phone className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {s.mobileNumber}
               </span>
             )}
             {a.course && (
-              <span className="inline-flex items-center gap-1.5">
-                {a.course} · {a.branch}
+              <span className="inline-flex min-w-0 items-center gap-1.5">
+                <span className="truncate">
+                  {a.course} · {a.branch}
+                </span>
               </span>
             )}
           </div>
         </div>
-        <div className="text-right">
-          <p className="text-2xl font-bold text-heading">{profile?.completionPercentage ?? 0}%</p>
-          <p className="text-xs text-muted-foreground">complete</p>
-          <Button asChild variant="outline" size="sm" className="mt-2">
+        {/* Completion + edit sits inline on a phone (a right-aligned column
+            would strand the button under the avatar) and as a stat block from
+            `sm` up. */}
+        <div className="flex shrink-0 items-center justify-between gap-4 border-t border-border pt-4 sm:block sm:border-0 sm:pt-0 sm:text-right">
+          <div>
+            <p className="text-metric font-bold text-heading">
+              {profile?.completionPercentage ?? 0}%
+            </p>
+            <p className="text-xs text-muted-foreground">complete</p>
+          </div>
+          <Button asChild variant="outline" size="sm" className="sm:mt-2">
             <Link href={ROUTES.onboarding}>
               <Pencil /> Edit profile
             </Link>

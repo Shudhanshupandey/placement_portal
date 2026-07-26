@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { MotionConfig } from "framer-motion";
 import { QueryProvider } from "@/providers/query-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { MockAuthProvider } from "@/providers/mock-auth-provider";
@@ -22,11 +23,17 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryProvider>
-      <SelectedAuthProvider>
-        {children}
-        <Toaster />
-        {IS_DEV_MODE && <DevModeToolbar />}
-      </SelectedAuthProvider>
+      {/* `reducedMotion="user"` makes every Framer Motion animation in the app
+          honour the OS "reduce motion" setting — transforms and opacity fades
+          are skipped rather than merely shortened. The CSS side of the same
+          promise is handled by the media query in styles/globals.css. */}
+      <MotionConfig reducedMotion="user">
+        <SelectedAuthProvider>
+          {children}
+          <Toaster />
+          {IS_DEV_MODE && <DevModeToolbar />}
+        </SelectedAuthProvider>
+      </MotionConfig>
     </QueryProvider>
   );
 }

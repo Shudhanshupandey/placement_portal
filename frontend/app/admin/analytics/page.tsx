@@ -2,6 +2,7 @@
 
 import { SectionCard } from "@/components/shared/section-card";
 import {
+  PageShell,
   PageHeader,
   KpiCard,
   KpiGrid,
@@ -21,7 +22,7 @@ import {
 
 export default function AdminAnalyticsPage() {
   return (
-    <div className="space-y-6">
+    <PageShell>
       <PageHeader
         title="Analytics"
         description="Placement performance across branches, packages and recruiters."
@@ -59,6 +60,6 @@ export default function AdminAnalyticsPage() {
           <BarList data={MOCK_TOP_RECRUITERS} />
         </SectionCard>
       </div>
-    </div>
+    </PageShell>
   );
 }

@@ -363,6 +363,51 @@ Each entry follows the same shape: **Why it exists · What belongs here · Best 
 - **Naming:** Files **kebab-case** (`data-table.tsx`), exported components **PascalCase** (`DataTable`).
 - **Mistakes:** Business logic or data-fetching inside a "dumb" component. Letting `components/` become the dumping ground for feature-specific UI.
 
+#### The application frame (one implementation, three portals)
+
+`layout/portal-shell.tsx` is the single app frame: collapsible desktop sidebar,
+accessible mobile drawer, sticky topbar slot, main column and skip link. All
+three portals compose it, so a chrome fix lands everywhere at once:
+
+```
+PortalShell (layout/portal-shell.tsx)
+├── PortalSidebar (layout/portal-sidebar.tsx)   ← nav config in, chrome out
+├── topbar={…}                                   ← the one portal-specific part
+│     ├── AppTopbar      (layout/)   → student: search, quick actions, bell
+│     └── ConsoleTopbar  (console/)  → recruiter + admin: contextual title
+└── Sheet (ui/sheet.tsx)                         ← the mobile drawer
+```
+
+- **The student portal and the consoles used to carry separate, drifting copies**
+  of the shell and the sidebar (`app-sidebar.tsx` + `console-sidebar.tsx` were
+  95% identical). Both are gone; `PortalSidebar` is parameterised by a nav
+  config instead. `ConsoleShell` is now a thin wrapper that only supplies the
+  console topbar and derives the page title from the nav.
+- **The drawer is a Radix Dialog** (`ui/sheet.tsx`), not an animated `<div>` —
+  that is what provides the focus trap, Escape-to-close, focus restoration,
+  background scroll lock and `aria-modal`.
+
+#### Brand marks — `shared/brand-logo.tsx`
+
+Three components, because the official artwork cannot serve every size. The
+supplied lockup is a ~3.9:1 banner with three lines of fine serif text, and at
+the 28–36px height app chrome allows it renders as an illegible smudge.
+
+| Component | Use for | Notes |
+|---|---|---|
+| `BrandLockup` | app chrome, auth panels | Crest + a **live** typographic wordmark; `tone="light" \| "dark"` picks the treatment for the background automatically |
+| `BrandMark` | favicons, collapsed rail, loaders | The crest alone — a badge reads correctly when small |
+| `BrandLogo` | wide surfaces only (≥240px) | The raster banner; also the single map from semantic variant → asset filename |
+
+#### Console page primitives — `dashboard/`
+
+`PageShell` → `PageHeader` → `ListToolbar` (`SearchField` + `FilterChips`) →
+`DataTable`. `PageShell` owns the page's vertical rhythm, so `PageHeader` and
+`ListToolbar` deliberately carry **no** outer margin. `DataTable` takes an
+optional `renderMobileCard` to stack rows as cards below `sm` (a six-column
+table on a 360px viewport is a scroll puzzle) and `variant="embedded"` to drop
+its own border when nested in a `SectionCard`.
+
 ### `lib/`
 - **Why:** Configured third-party clients and thin wrappers — the app's "SDK layer." Distinct from `utils/` (which is *pure* functions with no dependencies).
 - **What belongs:** `firebase/` (client + admin init), `cloudinary/`, `auth/` (session, RBAC), `api/` (fetcher, TanStack `queryClient`), `permissions/`, `storage/`, `theme/`, `utils.ts` (the shadcn `cn()`), `logger.ts`.
@@ -431,6 +476,33 @@ Each entry follows the same shape: **Why it exists · What belongs here · Best 
 - **Why:** Global CSS that Tailwind utilities can't express.
 - **What belongs:** `globals.css` (Tailwind directives + CSS variables), `theme.css` (light/dark tokens), `animations.css` (keyframes).
 - **Best practice:** Prefer Tailwind utilities in components; reserve these for tokens, resets, and complex keyframes. **Mistake:** Recreating a parallel CSS system that competes with Tailwind.
+
+#### Colour is single-sourced in `globals.css`
+
+The locked palette lives once, in `:root`, as **space-separated RGB channels**;
+`tailwind.config.ts` consumes each one through `rgb(var(--token) / <alpha-value>)`
+so Tailwind's opacity modifiers keep working (`bg-primary/10`, `text-gold/80`,
+`ring-ring/25`). Never paste a hex anywhere else — in SVG, reach for the
+`stroke-*` / `fill-*` utilities rather than a literal.
+
+Two additions worth knowing about:
+
+- **`*-ink` tokens** (`gold-ink`, `success-ink`, `warning-ink`, `error-ink`,
+  `info-ink`) are the same hues darkened for **text on their own tint**. The raw
+  status colours fail WCAG AA badly as small text — `#22C55E` on a pale green
+  chip is ~2.3:1 — so every badge and status pill uses the ink variant.
+- **`--topbar-h`** is shared by the shells, sticky sidebars and
+  `scroll-padding-top`, so anchored content never lands under the sticky header.
+
+Motion respects the OS setting from both sides: the `prefers-reduced-motion`
+block in `globals.css` covers CSS, and `<MotionConfig reducedMotion="user">` in
+`providers/app-providers.tsx` covers every Framer Motion animation.
+
+Layout utilities defined here: `page-gutter` (responsive gutters that also clear
+notches via `env(safe-area-inset-*)`), `min-h-safe-screen` (`100svh`, so mobile
+browser chrome can't clip a full-height screen), `no-scrollbar` / `snap-x-rail`
+(mobile chip rails), `scroll-fade-x`, `pb-safe`, and `on-dark` (switches focus
+rings to gold on navy surfaces).
 
 ### `assets/` vs `public/`
 - **`assets/`:** Source files **imported into code** (illustrations, brand SVGs) — they go through the bundler (optimized, hashed, tree-shaken).

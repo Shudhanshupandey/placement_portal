@@ -17,9 +17,9 @@ export const NOTIFICATION_META: Record<
   drive: { icon: Briefcase, tint: "bg-primary/10 text-primary", label: "Placement Drive" },
   interview: { icon: CalendarClock, tint: "bg-info/10 text-info", label: "Interview" },
   selection: { icon: Trophy, tint: "bg-success/10 text-success", label: "Selection" },
-  announcement: { icon: Megaphone, tint: "bg-gold/15 text-[#8A6D1E]", label: "Announcement" },
+  announcement: { icon: Megaphone, tint: "bg-gold/15 text-gold-ink", label: "Announcement" },
   application: { icon: FileText, tint: "bg-primary/10 text-primary", label: "Application" },
-  document: { icon: FileWarning, tint: "bg-warning/15 text-[#B45309]", label: "Document" },
+  document: { icon: FileWarning, tint: "bg-warning/15 text-warning-ink", label: "Document" },
   system: { icon: Settings2, tint: "bg-muted text-muted-foreground", label: "System" },
 };
 

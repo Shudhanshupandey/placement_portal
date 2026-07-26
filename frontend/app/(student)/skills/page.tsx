@@ -34,10 +34,10 @@ export default function SkillsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-heading">Skills &amp; Certifications</h1>
-          <p className="text-sm text-muted-foreground">Your technical profile shown to recruiters.</p>
+          <h1 className="text-display-sm font-bold text-heading">Skills &amp; Certifications</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Your technical profile shown to recruiters.</p>
         </div>
         <Button asChild variant="outline" size="sm">
           <Link href={`${ROUTES.onboarding}?step=2`}>
@@ -71,7 +71,7 @@ export default function SkillsPage() {
             <Chips items={[...(p?.frameworks ?? []), ...(p?.technologies ?? [])]} tint="bg-section text-foreground" />
           </SectionCard>
           <SectionCard title="Certifications" action={<Award className="h-4 w-4 text-gold" />}>
-            <Chips items={p?.certifications} tint="bg-gold/15 text-[#8A6D1E]" />
+            <Chips items={p?.certifications} tint="bg-gold/15 text-gold-ink" />
           </SectionCard>
         </div>
       )}

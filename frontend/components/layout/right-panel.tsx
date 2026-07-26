@@ -14,8 +14,11 @@ export function RightPanel() {
   const recent = notifications.slice(0, 4);
 
   return (
-    <aside className="hidden w-80 shrink-0 border-l border-border bg-card/40 xl:block">
-      <div className="sticky top-16 space-y-5 p-5">
+    <aside
+      aria-label="Profile summary and recent activity"
+      className="hidden w-80 shrink-0 border-l border-border bg-card/40 xl:block"
+    >
+      <div className="sticky top-[var(--topbar-h)] space-y-5 p-5">
         {/* Completion nudge */}
         <div className="rounded-2xl border border-border bg-card p-5 shadow-soft">
           <div className="flex items-center gap-2">

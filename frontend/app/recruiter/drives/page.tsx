@@ -4,7 +4,7 @@ import * as React from "react";
 import { Plus, MapPin, Users, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PageHeader, StatusPill, type PillTone } from "@/components/dashboard";
+import { PageShell, PageHeader, StatusPill, type PillTone } from "@/components/dashboard";
 import { formatDate } from "@/utils/format";
 import { MOCK_DRIVES } from "@/data/mock";
 import type { PlacementDrive } from "@/features/placement-drives";
@@ -19,7 +19,7 @@ function initials(name: string) {
 
 export default function RecruiterDrivesPage() {
   return (
-    <div>
+    <PageShell>
       <PageHeader
         title="Placement drives"
         description="Job postings you have opened for SAITM students."
@@ -70,15 +70,24 @@ export default function RecruiterDrivesPage() {
               ))}
             </div>
 
-            <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+            {/* Absorbs the leftover height so the footer sits on the card's
+                bottom edge — cards in a row line up however many skill chips
+                each one happens to carry. */}
+            <div className="flex-1" aria-hidden="true" />
+
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
               <span className="text-sm font-semibold text-heading">{d.packageLabel}</span>
               <Button variant="outline" size="sm">
                 View applicants
+                <span className="sr-only">
+                  {" "}
+                  for {d.role} at {d.companyName}
+                </span>
               </Button>
             </div>
           </article>
         ))}
       </div>
-    </div>
+    </PageShell>
   );
 }

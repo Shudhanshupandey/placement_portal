@@ -17,15 +17,15 @@ export function StepIndicator({ steps, current }: StepIndicatorProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-gold">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-wider text-gold-ink">
             Step {current + 1} of {total}
           </p>
-          <h2 className="mt-0.5 text-xl font-bold text-heading">
+          <h2 className="mt-0.5 text-display-sm font-bold text-heading">
             {steps[current].title}
           </h2>
-          <p className="text-sm text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             {steps[current].description}
           </p>
         </div>
@@ -35,22 +35,26 @@ export function StepIndicator({ steps, current }: StepIndicatorProps) {
       </div>
 
       {/* Desktop stepper */}
-      <ol className="hidden items-center gap-2 md:flex">
+      <ol className="hidden items-center gap-2 md:flex" aria-label="Onboarding steps">
         {steps.map((s, i) => {
           const done = i < current;
           const active = i === current;
           return (
             <React.Fragment key={s.title}>
-              <li className="flex items-center gap-2">
+              <li
+                className="flex items-center gap-2"
+                aria-current={active ? "step" : undefined}
+              >
                 <span
                   className={cn(
-                    "flex h-8 w-8 items-center justify-center rounded-full border text-sm font-semibold transition-colors",
+                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-sm font-semibold transition-colors",
                     done && "border-primary bg-primary text-primary-foreground",
                     active && "border-primary bg-primary/10 text-primary",
                     !done && !active && "border-border bg-card text-muted-foreground"
                   )}
                 >
-                  {done ? <Check className="h-4 w-4" /> : i + 1}
+                  {done ? <Check className="h-4 w-4" aria-hidden="true" /> : i + 1}
+                  <span className="sr-only">{done ? " completed" : active ? " current" : ""}</span>
                 </span>
                 <span
                   className={cn(
@@ -78,7 +82,10 @@ export function StepIndicator({ steps, current }: StepIndicatorProps) {
 
       {/* Mobile progress */}
       <div className="md:hidden">
-        <Progress value={pct} />
+        <Progress
+          value={pct}
+          aria-label={`Onboarding progress: step ${current + 1} of ${total}`}
+        />
       </div>
     </div>
   );

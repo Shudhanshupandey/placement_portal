@@ -147,16 +147,14 @@ export default function RecruiterDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="text-xl font-bold tracking-tight text-heading sm:text-2xl">
-            Recruiter workspace
-          </h1>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+        <div className="min-w-0">
+          <h1 className="text-display-sm font-bold text-heading">Recruiter workspace</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Track your postings, applicants and interviews at a glance.
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="w-full shrink-0 sm:w-auto">
           <Link href={ROUTES.recruiter.drives}>
             <Plus /> Post a drive
           </Link>
@@ -209,7 +207,30 @@ export default function RecruiterDashboardPage() {
         }
         bodyClassName="p-0"
       >
-        <DataTable columns={applicantCols} rows={applicants} rowKey={(r) => r.uid} />
+        <DataTable
+          variant="embedded"
+          columns={applicantCols}
+          rows={applicants}
+          rowKey={(r) => r.uid}
+          caption="Most recent candidates to apply to your drives"
+          renderMobileCard={(r) => (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={r.photoUrl} alt="" />
+                <AvatarFallback>{initials(r.fullName)}</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold text-heading">{r.fullName}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {r.branch} · CGPA {r.cgpa.toFixed(2)}
+                </p>
+              </div>
+              <StatusPill tone={PLACEMENT_TONE[r.placementState]}>
+                {PLACEMENT_LABEL[r.placementState]}
+              </StatusPill>
+            </div>
+          )}
+        />
       </SectionCard>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -224,7 +245,28 @@ export default function RecruiterDashboardPage() {
           }
           bodyClassName="p-0"
         >
-          <DataTable columns={driveCols} rows={drives} rowKey={(d) => d.id} />
+          <DataTable
+            variant="embedded"
+            columns={driveCols}
+            rows={drives}
+            rowKey={(d) => d.id}
+            caption="Your placement drives with package, openings, deadline and status"
+            renderMobileCard={(d) => (
+              <div className="space-y-2">
+                <div className="flex items-start gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold text-heading">{d.role}</p>
+                    <p className="truncate text-xs text-muted-foreground">{d.companyName}</p>
+                  </div>
+                  <DriveStatus status={d.status} />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {d.packageLabel} · {d.openings ?? "—"} openings
+                  {d.lastDateMs ? ` · closes ${formatDate(d.lastDateMs)}` : ""}
+                </p>
+              </div>
+            )}
+          />
         </SectionCard>
 
         <SectionCard title="Upcoming interviews" description="Scheduled rounds with your candidates">

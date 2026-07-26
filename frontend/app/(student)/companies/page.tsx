@@ -25,7 +25,7 @@ export default function CompaniesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-heading">Companies</h1>
+        <h1 className="text-display-sm font-bold text-heading">Companies</h1>
         <p className="text-sm text-muted-foreground">Companies currently recruiting at SAITM.</p>
       </div>
 

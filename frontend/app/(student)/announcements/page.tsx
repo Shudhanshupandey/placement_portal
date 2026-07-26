@@ -12,7 +12,7 @@ export default function AnnouncementsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-heading">Announcements</h1>
+        <h1 className="text-display-sm font-bold text-heading">Announcements</h1>
         <p className="text-sm text-muted-foreground">Official updates from the TPO office.</p>
       </div>
 

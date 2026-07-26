@@ -6,6 +6,7 @@ import { Check, X } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
+  PageShell,
   PageHeader,
   DataTable,
   StatusPill,
@@ -63,7 +64,12 @@ export default function AdminRecruitersPage() {
             <Button size="sm" variant="outline" onClick={() => toast.success(`Approved ${r.fullName} (demo)`)}>
               <Check /> Approve
             </Button>
-            <Button size="sm" variant="ghost" onClick={() => toast(`Rejected ${r.fullName} (demo)`)}>
+            <Button
+              size="sm"
+              variant="ghost"
+              aria-label={`Reject ${r.fullName}`}
+              onClick={() => toast(`Rejected ${r.fullName} (demo)`)}
+            >
               <X />
             </Button>
           </div>
@@ -76,7 +82,7 @@ export default function AdminRecruitersPage() {
   ];
 
   return (
-    <div>
+    <PageShell>
       <PageHeader
         title="Recruiters"
         description={
@@ -85,7 +91,65 @@ export default function AdminRecruitersPage() {
             : `${MOCK_RECRUITERS.length} recruiters registered.`
         }
       />
-      <DataTable columns={cols} rows={MOCK_RECRUITERS} rowKey={(r) => r.uid} />
-    </div>
+      <DataTable
+        columns={cols}
+        rows={MOCK_RECRUITERS}
+        rowKey={(r) => r.uid}
+        caption="Registered recruiters with company, drives posted and approval status"
+        renderMobileCard={(r) => (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={r.photoUrl} alt="" />
+                <AvatarFallback>{initials(r.fullName)}</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold text-heading">{r.fullName}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {r.designation} · {r.companyName}
+                </p>
+              </div>
+              <StatusPill tone={approvalTone(r.approvalStatus)}>
+                {r.approvalStatus ?? "—"}
+              </StatusPill>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">
+                {r.jobsPosted} {r.jobsPosted === 1 ? "drive" : "drives"} posted
+              </span>
+              <div className="ml-auto flex gap-2">
+                {r.approvalStatus === "pending" ? (
+                  <>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => toast.success(`Approved ${r.fullName} (demo)`)}
+                    >
+                      <Check /> Approve
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      aria-label={`Reject ${r.fullName}`}
+                      onClick={() => toast(`Rejected ${r.fullName} (demo)`)}
+                    >
+                      <X />
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => toast(`Viewing ${r.fullName} (demo)`)}
+                  >
+                    View
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      />
+    </PageShell>
   );
 }

@@ -15,52 +15,34 @@ import {
   Github,
   Linkedin,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/auth/use-auth";
 import { useFullProfile, useUpdateSettings } from "@/features/profile";
 import { ROUTES } from "@/constants/routes";
 import { SectionCard } from "@/components/shared/section-card";
 import { Button } from "@/components/ui/button";
-
-function Toggle({
-  checked,
-  onChange,
-  label,
-}: {
-  checked: boolean;
-  onChange: (v: boolean) => void;
-  label: string;
-}) {
-  return (
-    <label className="flex items-center justify-between gap-3 py-2">
-      <span className="text-sm text-foreground">{label}</span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        aria-label={label}
-        onClick={() => onChange(!checked)}
-        className={cn(
-          "relative h-6 w-11 shrink-0 rounded-full transition-colors",
-          checked ? "bg-primary" : "bg-border"
-        )}
-      >
-        <span
-          className={cn(
-            "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform",
-            checked ? "translate-x-[22px]" : "translate-x-0.5"
-          )}
-        />
-      </button>
-    </label>
-  );
-}
+import { SwitchField } from "@/components/ui/switch";
 
 const PREF_LABELS = [
-  { key: "drives", label: "New placement drives" },
-  { key: "interviews", label: "Interview schedules" },
-  { key: "applications", label: "Application status updates" },
-  { key: "announcements", label: "Admin announcements" },
+  {
+    key: "drives",
+    label: "New placement drives",
+    description: "When the TPO office publishes a new drive you're eligible for.",
+  },
+  {
+    key: "interviews",
+    label: "Interview schedules",
+    description: "Invites, reschedules and reminders.",
+  },
+  {
+    key: "applications",
+    label: "Application status updates",
+    description: "Shortlists, rejections and offer releases.",
+  },
+  {
+    key: "announcements",
+    label: "Admin announcements",
+    description: "Notices from the Placement Cell.",
+  },
 ] as const;
 
 export default function SettingsPage() {
@@ -97,28 +79,32 @@ export default function SettingsPage() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-heading">Settings</h1>
-        <p className="text-sm text-muted-foreground">Manage your account and preferences.</p>
+        <h1 className="text-display-sm font-bold text-heading">Settings</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Manage your account and preferences.
+        </p>
       </div>
 
       {/* Account */}
       <SectionCard title="Account">
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-sm font-medium text-heading">College Email</p>
-              <p className="text-sm text-muted-foreground">{user?.email}</p>
+              <p className="break-all text-sm text-muted-foreground">{user?.email}</p>
             </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success">
-              <ShieldCheck className="h-3.5 w-3.5" /> Verified
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success/10 px-2.5 py-1 text-xs font-medium text-success-ink">
+              <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" /> Verified
             </span>
           </div>
-          <div className="flex items-center justify-between border-t border-border pt-4">
-            <div>
+          <div className="flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
               <p className="text-sm font-medium text-heading">Profile</p>
-              <p className="text-sm text-muted-foreground">Edit your personal, academic & professional details.</p>
+              <p className="text-sm text-muted-foreground">
+                Edit your personal, academic &amp; professional details.
+              </p>
             </div>
-            <Button asChild variant="outline" size="sm">
+            <Button asChild variant="outline" size="sm" className="shrink-0 self-start sm:self-auto">
               <Link href={ROUTES.onboarding}>
                 <Pencil /> Edit Profile
               </Link>
@@ -148,12 +134,13 @@ export default function SettingsPage() {
         action={<Bell className="h-4 w-4 text-muted-foreground" />}
       >
         <div className="divide-y divide-border">
-          {PREF_LABELS.map(({ key, label }) => (
-            <Toggle
+          {PREF_LABELS.map(({ key, label, description }) => (
+            <SwitchField
               key={key}
               label={label}
+              description={description}
               checked={prefs[key]}
-              onChange={(v) => setPrefs((p) => ({ ...p, [key]: v }))}
+              onCheckedChange={(v) => setPrefs((p) => ({ ...p, [key]: v }))}
             />
           ))}
         </div>
@@ -161,29 +148,30 @@ export default function SettingsPage() {
 
       {/* Privacy */}
       <SectionCard title="Privacy" action={<Eye className="h-4 w-4 text-muted-foreground" />}>
-        <Toggle
+        <SwitchField
           label="Make my profile visible to recruiters"
+          description="Recruiters can find you in candidate search and shortlist you directly."
           checked={visible}
-          onChange={setVisible}
+          onCheckedChange={setVisible}
         />
       </SectionCard>
 
       {/* Connected accounts */}
       <SectionCard title="Connected Accounts" action={<Link2 className="h-4 w-4 text-muted-foreground" />}>
         <div className="space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
             <span className="flex items-center gap-2 text-sm text-heading">
-              <Github className="h-4 w-4" /> GitHub
+              <Github className="h-4 w-4" aria-hidden="true" /> GitHub
             </span>
-            <span className="text-sm text-muted-foreground">
+            <span className="min-w-0 break-all text-sm text-muted-foreground">
               {full?.professional.github || "Not connected"}
             </span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
             <span className="flex items-center gap-2 text-sm text-heading">
-              <Linkedin className="h-4 w-4" /> LinkedIn
+              <Linkedin className="h-4 w-4" aria-hidden="true" /> LinkedIn
             </span>
-            <span className="text-sm text-muted-foreground">
+            <span className="min-w-0 break-all text-sm text-muted-foreground">
               {full?.professional.linkedin || "Not connected"}
             </span>
           </div>
@@ -195,11 +183,18 @@ export default function SettingsPage() {
         </div>
       </SectionCard>
 
-      <div className="flex items-center justify-between">
-        <Button variant="destructive" onClick={handleSignOut}>
+      {/* Save is the primary action, so on mobile it sits first (thumb reach)
+          and full-width; logout stays visually secondary. */}
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Button variant="destructive" onClick={handleSignOut} className="w-full sm:w-auto">
           <LogOut /> Logout
         </Button>
-        <Button variant="gold" onClick={savePrefs} disabled={saving}>
+        <Button
+          variant="gold"
+          onClick={savePrefs}
+          disabled={saving}
+          className="w-full sm:w-auto"
+        >
           {saving ? "Saving…" : "Save changes"}
         </Button>
       </div>

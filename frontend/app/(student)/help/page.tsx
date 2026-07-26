@@ -28,7 +28,7 @@ export default function HelpPage() {
           <LifeBuoy className="h-5 w-5" />
         </span>
         <div>
-          <h1 className="text-2xl font-bold text-heading">Help &amp; Support</h1>
+          <h1 className="text-display-sm font-bold text-heading">Help &amp; Support</h1>
           <p className="text-sm text-muted-foreground">Answers to common questions, and how to reach us.</p>
         </div>
       </div>

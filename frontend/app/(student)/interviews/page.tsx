@@ -12,7 +12,7 @@ export default function InterviewsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-heading">Interview Schedule</h1>
+        <h1 className="text-display-sm font-bold text-heading">Interview Schedule</h1>
         <p className="text-sm text-muted-foreground">Drives where you&apos;ve been shortlisted for an interview.</p>
       </div>
 

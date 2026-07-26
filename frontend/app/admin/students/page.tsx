@@ -1,13 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
 import {
+  PageShell,
   PageHeader,
   DataTable,
   StatusPill,
+  SearchField,
+  FilterChips,
+  ListToolbar,
   type Column,
   type PillTone,
 } from "@/components/dashboard";
@@ -102,47 +104,67 @@ export default function AdminStudentsPage() {
   ];
 
   return (
-    <div>
+    <PageShell>
       <PageHeader
         title="Students"
         description={`${MOCK_STUDENT_DIRECTORY.length} registered students across all branches.`}
       />
 
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="relative min-w-[220px] flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name, enrollment or branch…"
-            className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
-          />
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              onClick={() => setFilter(f.key)}
-              className={cn(
-                "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                filter === f.key
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-muted-foreground hover:text-heading"
-              )}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ListToolbar>
+        <SearchField
+          value={query}
+          onChange={setQuery}
+          label="Search students by name, enrollment number or branch"
+          placeholder="Search by name, enrollment or branch…"
+        />
+        <FilterChips
+          options={FILTERS}
+          value={filter}
+          onChange={setFilter}
+          label="Filter students by placement status"
+        />
+      </ListToolbar>
+
+      <p className="sr-only" role="status">
+        {rows.length} students match the current filters.
+      </p>
 
       <DataTable
         columns={cols}
         rows={rows}
         rowKey={(r) => r.uid}
+        caption="Registered students with branch, CGPA, verification and placement status"
         emptyMessage="No students match your search."
+        renderMobileCard={(r) => (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={r.photoUrl} alt="" />
+                <AvatarFallback>{initials(r.fullName)}</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold text-heading">{r.fullName}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {r.enrollmentNumber} · {r.branch}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <StatusPill tone={PLACE_TONE[r.placementState]}>
+                {PLACE_LABEL[r.placementState]}
+              </StatusPill>
+              <StatusPill tone={VERIF_TONE[r.verificationStatus]}>
+                {r.verificationStatus}
+              </StatusPill>
+              <span className="ml-auto text-xs text-muted-foreground">
+                CGPA <span className="font-semibold text-heading">{r.cgpa.toFixed(2)}</span>
+                <span className="mx-1.5 text-border">|</span>
+                {r.offersCount} {r.offersCount === 1 ? "offer" : "offers"}
+              </span>
+            </div>
+          </div>
+        )}
       />
-    </div>
+    </PageShell>
   );
 }

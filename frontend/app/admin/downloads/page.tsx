@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/dashboard";
+import { PageShell, PageHeader } from "@/components/dashboard";
 import { inr } from "@/utils/format";
 import {
   MOCK_STUDENT_DIRECTORY,
@@ -84,7 +84,7 @@ const EXPORTS: ExportItem[] = [
 
 export default function AdminDownloadsPage() {
   return (
-    <div>
+    <PageShell>
       <PageHeader
         title="Downloads"
         description="Export placement data for reporting, audits and NAAC submissions."
@@ -96,9 +96,9 @@ export default function AdminDownloadsPage() {
             key={e.key}
             className="flex flex-col rounded-2xl border border-border bg-card p-5 shadow-soft"
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start justify-between gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <e.icon className="h-5 w-5" />
+                <e.icon className="h-5 w-5" aria-hidden="true" />
               </span>
               <span className="rounded-md bg-section px-1.5 py-0.5 text-[11px] font-semibold text-muted-foreground">
                 {e.format}
@@ -106,7 +106,7 @@ export default function AdminDownloadsPage() {
             </div>
             <h2 className="mt-3 font-semibold text-heading">{e.title}</h2>
             <p className="mt-1 flex-1 text-sm text-muted-foreground">{e.description}</p>
-            <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
               <span className="text-xs text-muted-foreground">{inr(e.records)} records</span>
               <Button
                 variant="outline"
@@ -114,11 +114,12 @@ export default function AdminDownloadsPage() {
                 onClick={() => toast.success(`Exporting ${e.title} as ${e.format} (demo)`)}
               >
                 <Download /> Export
+                <span className="sr-only"> {e.title} as {e.format}</span>
               </Button>
             </div>
           </article>
         ))}
       </div>
-    </div>
+    </PageShell>
   );
 }

@@ -3,9 +3,10 @@
 import * as React from "react";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, Briefcase } from "lucide-react";
+import { Briefcase } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PageShell, PageHeader, SearchField } from "@/components/dashboard";
 import { useDrives, DriveCard } from "@/features/placement-drives";
 import { ApplyButton } from "@/features/applications";
 
@@ -20,24 +21,24 @@ function DrivesInner() {
   );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-heading">Placement Drives</h1>
-          <p className="text-sm text-muted-foreground">
-            Opportunities approved by the SAITM TPO office.
-          </p>
-        </div>
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
+    <PageShell>
+      <PageHeader
+        title="Placement Drives"
+        description="Opportunities approved by the SAITM TPO office."
+        action={
+          <SearchField
             value={q}
-            onChange={(e) => setQ(e.target.value)}
+            onChange={setQ}
+            label="Search drives by company, role or location"
             placeholder="Search company, role, location…"
-            className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
+            className="w-full sm:w-72"
           />
-        </div>
-      </div>
+        }
+      />
+
+      <p className="sr-only" role="status">
+        {filtered.length} placement drives match your search.
+      </p>
 
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-2">
@@ -62,7 +63,7 @@ function DrivesInner() {
           ))}
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }
 

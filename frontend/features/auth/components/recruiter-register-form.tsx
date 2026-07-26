@@ -192,12 +192,15 @@ export function RecruiterRegisterForm() {
             name="agree"
             render={({ field }) => (
               <FormItem>
-                <label className="flex items-start gap-2.5 text-sm text-foreground">
+                {/* Generous vertical padding gives the checkbox a 44px-tall
+                    tap row without inflating the box itself; `accent-primary`
+                    tints the native control from the palette token. */}
+                <label className="flex cursor-pointer items-start gap-3 py-1.5 text-sm text-foreground">
                   <input
                     type="checkbox"
                     checked={field.value}
                     onChange={(e) => field.onChange(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-input text-primary accent-[#18305F]"
+                    className="mt-0.5 h-[18px] w-[18px] shrink-0 cursor-pointer rounded border-input accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2"
                   />
                   <span>
                     I confirm the information is accurate and accept the SAITM recruiter terms.

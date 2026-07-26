@@ -1,13 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { Search } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
 import {
+  PageShell,
   PageHeader,
   DataTable,
   StatusPill,
+  SearchField,
+  FilterChips,
+  ListToolbar,
   type Column,
   type PillTone,
 } from "@/components/dashboard";
@@ -95,47 +97,69 @@ export default function RecruiterApplicantsPage() {
   ];
 
   return (
-    <div>
+    <PageShell>
       <PageHeader
         title="Applicants"
         description={`${MOCK_STUDENT_DIRECTORY.length} candidates in the SAITM talent pool.`}
       />
 
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="relative min-w-[220px] flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by name, branch or skill…"
-            className="h-10 w-full rounded-lg border border-border bg-card pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-ring/20"
-          />
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              onClick={() => setFilter(f.key)}
-              className={cn(
-                "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
-                filter === f.key
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-muted-foreground hover:text-heading"
-              )}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <ListToolbar>
+        <SearchField
+          value={query}
+          onChange={setQuery}
+          label="Search candidates by name, branch or skill"
+          placeholder="Search by name, branch or skill…"
+        />
+        <FilterChips
+          options={FILTERS}
+          value={filter}
+          onChange={setFilter}
+          label="Filter candidates by placement status"
+        />
+      </ListToolbar>
+
+      <p className="sr-only" role="status">
+        {rows.length} candidates match the current filters.
+      </p>
 
       <DataTable
         columns={cols}
         rows={rows}
         rowKey={(r) => r.uid}
+        caption="Candidate pool with branch, CGPA, backlogs, applications and status"
         emptyMessage="No candidates match your search."
+        renderMobileCard={(r) => (
+          <div className="space-y-3">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={r.photoUrl} alt="" />
+                <AvatarFallback>{initials(r.fullName)}</AvatarFallback>
+              </Avatar>
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-semibold text-heading">{r.fullName}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {r.enrollmentNumber} · {r.branch}
+                </p>
+              </div>
+              <StatusPill tone={TONE[r.placementState]}>{LABEL[r.placementState]}</StatusPill>
+            </div>
+            <dl className="grid grid-cols-3 gap-2 border-t border-border pt-3 text-center text-xs">
+              <div>
+                <dt className="text-muted-foreground">CGPA</dt>
+                <dd className="font-semibold text-heading">{r.cgpa.toFixed(2)}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Backlogs</dt>
+                <dd className="font-semibold text-heading">{r.activeBacklogs}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Applications</dt>
+                <dd className="font-semibold text-heading">{r.applicationsCount}</dd>
+              </div>
+            </dl>
+          </div>
+        )}
       />
-    </div>
+    </PageShell>
   );
 }

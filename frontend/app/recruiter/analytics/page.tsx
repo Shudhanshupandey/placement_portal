@@ -2,6 +2,7 @@
 
 import { SectionCard } from "@/components/shared/section-card";
 import {
+  PageShell,
   PageHeader,
   KpiCard,
   KpiGrid,
@@ -24,7 +25,7 @@ const APPLICANTS_BY_DRIVE = [
 
 export default function RecruiterAnalyticsPage() {
   return (
-    <div className="space-y-6">
+    <PageShell>
       <PageHeader
         title="Analytics"
         description="Performance of your postings across the current placement cycle."
@@ -59,6 +60,6 @@ export default function RecruiterAnalyticsPage() {
           <BarList data={APPLICANTS_BY_DRIVE} />
         </SectionCard>
       </div>
-    </div>
+    </PageShell>
   );
 }

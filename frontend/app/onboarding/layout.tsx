@@ -10,6 +10,8 @@ export default function OnboardingLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="min-h-screen bg-section px-4 py-10 sm:py-14">{children}</main>
+    <main className="page-gutter min-h-safe-screen bg-section py-8 pb-safe sm:py-14">
+      {children}
+    </main>
   );
 }

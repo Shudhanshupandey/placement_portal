@@ -16,7 +16,7 @@ export default function ResumePage() {
   return (
     <div className="max-w-2xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-heading">Resume</h1>
+        <h1 className="text-display-sm font-bold text-heading">Resume</h1>
         <p className="text-sm text-muted-foreground">
           Your resume is automatically attached when you apply to drives.
         </p>

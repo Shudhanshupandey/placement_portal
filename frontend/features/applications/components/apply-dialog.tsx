@@ -90,7 +90,7 @@ export function ApplyDialog({ drive, children }: ApplyDialogProps) {
           <>
             <DialogHeader>
               <div className="flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/15 text-[#B45309]">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-warning/15 text-warning-ink">
                   <ShieldAlert className="h-5 w-5" />
                 </span>
                 <DialogTitle>Complete your profile before applying</DialogTitle>

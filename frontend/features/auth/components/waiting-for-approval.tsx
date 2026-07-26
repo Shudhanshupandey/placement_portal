@@ -2,7 +2,7 @@
 
 import { Clock3, XCircle, LogOut, RefreshCw, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BrandLogo } from "@/components/shared/brand-logo";
+import { BrandLockup } from "@/components/shared/brand-logo";
 import type { ApprovalStatus } from "@/constants/roles";
 
 interface WaitingForApprovalProps {
@@ -25,15 +25,19 @@ export function WaitingForApproval({
   const rejected = status === "rejected";
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-section px-6">
-      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 text-center shadow-card">
-        <BrandLogo variant="full-navy" priority className="mx-auto mb-6 h-9" />
+    <div className="flex min-h-safe-screen items-center justify-center bg-section px-4 py-10 sm:px-6">
+      <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 text-center shadow-card sm:p-8">
+        <BrandLockup size="md" className="mb-6 justify-center" priority />
         <div
           className={`mx-auto flex h-16 w-16 items-center justify-center rounded-2xl ${
-            rejected ? "bg-error/10 text-error" : "bg-warning/15 text-[#B45309]"
+            rejected ? "bg-error/10 text-error" : "bg-warning/15 text-warning-ink"
           }`}
         >
-          {rejected ? <XCircle className="h-8 w-8" /> : <Clock3 className="h-8 w-8" />}
+          {rejected ? (
+            <XCircle className="h-8 w-8" aria-hidden="true" />
+          ) : (
+            <Clock3 className="h-8 w-8" aria-hidden="true" />
+          )}
         </div>
 
         <h1 className="mt-4 text-xl font-bold text-heading">

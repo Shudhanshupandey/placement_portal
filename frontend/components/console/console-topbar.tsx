@@ -23,6 +23,7 @@ interface ConsoleTopbarProps {
   subtitle?: string;
   displayName?: string;
   onOpenMobile: () => void;
+  mobileOpen: boolean;
   onSignOut: () => void;
 }
 
@@ -31,23 +32,33 @@ export function ConsoleTopbar({
   subtitle,
   displayName,
   onOpenMobile,
+  mobileOpen,
   onSignOut,
 }: ConsoleTopbarProps) {
   const { user, role } = useAuth();
   const name = displayName ?? user?.displayName ?? undefined;
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-card/85 px-4 backdrop-blur-md sm:px-6">
-      <button type="button" onClick={onOpenMobile} className="lg:hidden" aria-label="Open menu">
-        <Menu className="h-5 w-5 text-heading" />
+    <header className="page-gutter sticky top-0 z-30 flex h-16 shrink-0 items-center gap-2 border-b border-border bg-card/90 backdrop-blur-md sm:gap-3">
+      <button
+        type="button"
+        onClick={onOpenMobile}
+        aria-label="Open navigation menu"
+        aria-expanded={mobileOpen}
+        aria-haspopup="dialog"
+        className="-ml-2 inline-flex h-touch w-touch shrink-0 items-center justify-center rounded-lg text-heading transition-colors hover:bg-section lg:hidden"
+      >
+        <Menu className="h-5 w-5" aria-hidden="true" />
       </button>
 
-      <div className="min-w-0">
-        <h1 className="truncate text-sm font-bold text-heading sm:text-base">{title}</h1>
-        {subtitle && <p className="truncate text-xs text-muted-foreground">{subtitle}</p>}
+      <div className="min-w-0 flex-1">
+        <h1 className="truncate text-base font-bold text-heading">{title}</h1>
+        {subtitle && (
+          <p className="truncate text-xs text-muted-foreground">{subtitle}</p>
+        )}
       </div>
 
-      <div className="ml-auto flex items-center gap-2 sm:gap-3">
+      <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
         {role && (
           <span className="hidden rounded-full border border-border bg-section px-3 py-1 text-xs font-semibold capitalize text-heading sm:inline">
             {role}
@@ -58,13 +69,14 @@ export function ConsoleTopbar({
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-2 rounded-full p-0.5 pr-1 transition-colors hover:bg-section focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
+              aria-label="Account menu"
+              className="flex h-touch items-center gap-1.5 rounded-full px-0.5 transition-colors hover:bg-section focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
             >
               <Avatar className="h-9 w-9">
                 {user?.photoURL && <AvatarImage src={user.photoURL} alt="" />}
                 <AvatarFallback>{initials(name, user?.email ?? undefined)}</AvatarFallback>
               </Avatar>
-              <ChevronDown className="hidden h-4 w-4 text-muted-foreground sm:block" />
+              <ChevronDown className="hidden h-4 w-4 text-muted-foreground sm:block" aria-hidden="true" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-60">
